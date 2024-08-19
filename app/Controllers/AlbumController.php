@@ -25,7 +25,7 @@ class AlbumController
     }
 
     public function index()
-    {  
+    {
         $albums = Album::getAll();
         echo $this->blade->render('index', ['albums' => $albums, 'theme' => $this->themeSettings]);
     }
@@ -36,7 +36,7 @@ class AlbumController
         $metadata = $album->getMetadata();
 
         // Check if the album has a secret
-        if (isset($metadata['secret'])) {
+        if (isset($metadata->secret)) {
             // Initialize the session variables if not set
             if (!isset($_SESSION['attempts'])) {
                 $_SESSION['attempts'] = 0;
@@ -65,7 +65,7 @@ class AlbumController
 
             // If a password is submitted, verify it
             if ($_POST['password'] ?? false) {
-                if ($_POST['password'] !== $metadata['secret']) {
+                if ($_POST['password'] !== $metadata->secret) {
                     // Password is incorrect, increment the attempt counter
                     $_SESSION['attempts']++;
                     $_SESSION['last_attempt_time'] = time();
@@ -97,6 +97,8 @@ class AlbumController
             ];
         }, $photos);
 
-        echo $this->blade->render('album', ['album' => $metadata, 'photos' => $photosWithExif, 'theme' => $this->themeSettings]);
+
+
+        echo $this->blade->render('album', ['album' => (array) $metadata, 'photos' => $photosWithExif, 'theme' => $this->themeSettings]);
     }
 }

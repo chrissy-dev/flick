@@ -1,7 +1,7 @@
 <?php 
 
 return [
-    'site_url' => env('APP_URL', '/'),
-    'site_name' => env('SITE_NAME', 'Photos'),
+    'site_url' => $_ENV['APP_URL'] ?? '/', 
+    'site_title' => $_ENV['SITE_NAME'] ?? 'Stog',
     'logo_path' => '/assets/images/flick.svg',
 ];

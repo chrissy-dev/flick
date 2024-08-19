@@ -28,11 +28,13 @@ class Album
             $albumData[] = [
                 'name' => $albumName,
                 'title' => $metadata['title'] ?? $albumName, 
-                'date' => $metadata['date'] ?? null
+                'date' => $metadata['date'] ?? null,
+                'cover' => isset($metadata['data']['cover']) ? self::getThumbnail($albumName, $albumPath . '/' . $metadata['data']['cover']): null,
+                'data' => $metadata['data'] ?? [],
             ];
         }
 
-        return $albumData;
+        return (object) $albumData;
     }
 
     protected static function getMetadataFromPath($albumPath)
@@ -42,11 +44,13 @@ class Album
 
         $content = file_get_contents($metaFile);
         $document = YamlFrontMatter::parse($content);
+        $frontMatterData = $document->matter(); // Returns an associative array of front matter
 
         return [
             'title' => $document->title,
             'date' => $document->date,
             'secret' => $document->secret ?? null,
+            'data' => $frontMatterData,
             'content' => $document->body()
         ];
     }
@@ -63,11 +67,13 @@ class Album
 
         $content = file_get_contents($metaFile);
         $document = YamlFrontMatter::parse($content);
+        $frontMatterData = $document->matter(); // Returns an associative array of front matter
 
-        return [
+        return (object) [
             'title' => $document->title,
             'date' => $document->date,
             'secret' => $document->secret ?? null,
+            'data' => $frontMatterData,
             'content' => $document->body()
         ];
     }
@@ -106,6 +112,36 @@ class Album
         // Return the file path for the resized image
         return $filePath;
     }
+
+    public static function getThumbnail($album, $photo, $width = 200, $height = 200)
+    {
+        $filename = basename($photo);
+
+        // Generate a unique hash for the filename
+        $hash = md5($album . $filename);  // Hashing based on album name and filename
+
+        // Extract the file extension
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+        // Define the cache path and file path using the hashed filename
+        $cachePath = "../public/images/$album/thumbnails/$hash.$extension";
+        $filePath = "/images/$album/thumbnails/$hash.$extension";
+
+        // Check if the resized image already exists in the cache
+        if (!file_exists($cachePath)) {
+            // Create the directory if it doesn't exist
+            if (!is_dir("../public/images/$album/thumbnails")) {
+                mkdir("../public/images/$album/thumbnails", 0755, true);
+            }
+
+            // Resize and save the image in the cache
+            self::resizeImage($photo, $cachePath, $width, $height);
+        }
+
+        // Return the file path for the resized image
+        return $filePath;
+    }
+
 
     private static function resizeImage($source, $destination, $maxWidth = 800, $maxHeight = 600)
     {
