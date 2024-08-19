@@ -2,44 +2,26 @@
 
 # Flick —  Simple Self Hosted Photo Albums
 
+**⚠️ Note: This application is still under very early development. Features may be incomplete or subject to change, and the application is not yet stable.**
+
 Flick is a PHP application that allows you to easily manage and display photo albums with features like on-the-fly image resizing, password protection, and clean URLs. This README will guide you through setting up the application, managing your albums, theming, and more.
-
-## Important Note
-
-Flick is still under very early development 
 
 ## Table of Contents
 
-- [Flick —  Simple Self Hosted Photo Albums](#flick---simple-self-hosted-photo-albums)
-  - [Important Note](#important-note)
-  - [Table of Contents](#table-of-contents)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Accessing the Application](#accessing-the-application)
-  - [Directory Structure](#directory-structure)
-    - [Key Directories](#key-directories)
-  - [Adding Albums and Photos](#adding-albums-and-photos)
-    - [Example:](#example)
-  - [Metadata and Password Protection](#metadata-and-password-protection)
-    - [Example `meta.md` File:](#example-metamd-file)
-    - [Metadata Fields:](#metadata-fields)
-    - [Password Protection:](#password-protection)
-  - [Theming with Blade](#theming-with-blade)
-    - [Available Templates:](#available-templates)
-    - [Example of Customizing the Template:](#example-of-customizing-the-template)
-  - [Security Features](#security-features)
-  - [Using Carbon for Date Formatting](#using-carbon-for-date-formatting)
-    - [Example Usage in Blade Templates:](#example-usage-in-blade-templates)
-  - [Troubleshooting](#troubleshooting)
-    - [Common Issues](#common-issues)
-    - [Contact](#contact)
+1. [Getting Started](#getting-started)
+2. [Directory Structure](#directory-structure)
+3. [Adding Albums and Photos](#adding-albums-and-photos)
+4. [Metadata and Password Protection](#metadata-and-password-protection)
+5. [Theming with Blade](#theming-with-blade)
+6. [Security Features](#security-features)
+7. [Using Carbon for Date Formatting](#using-carbon-for-date-formatting)
+8. [Troubleshooting](#troubleshooting)
 
 ## Getting Started
 
 ### Prerequisites
 
-- **PHP 7.4+** (with `GD` or `Imagick` for image processing and `EXIF` for metadata extraction)
+- **PHP 8.0++** (with `GD` or `Imagick` for image processing and `EXIF` for metadata extraction)
 - **Composer** (for dependency management)
 - **Web Server** (e.g., Apache, Nginx) or PHP's built-in server for local development
 
@@ -48,8 +30,8 @@ Flick is still under very early development
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-repo/photo-album-app.git
-   cd photo-album-app
+   git clone https://github.com/chrissy-dev/flick.git flick
+   cd flick
    ```
 
 2. **Install dependencies:**
@@ -92,7 +74,7 @@ http://localhost:8000
 Here is an overview of the application's directory structure:
 
 ```
-photo-album-app/
+flick/
 ├── app/
 │   ├── Controllers/
 │   ├── Models/
@@ -124,7 +106,7 @@ photo-album-app/
 
 ## Adding Albums and Photos
 
-To add a new album, create a directory inside the `albums/` folder. Inside this directory, place your high-resolution images. The application will automatically resize and cache the images as needed.
+To add a new album, create a directory inside the `albums/` folder. Inside this directory, place your high-resolution images. The application will automatically resize and cache the images as needed. Keep in mind though, the bigger the image, the more processing that's needed. 
 
 ### Example:
 
@@ -165,7 +147,10 @@ title: My Vacation
 date: 2023-08-16
 secret: "mypassword"  # Optional: Add a password to protect the album
 ---
-This album contains photos from my vacation to Hawaii.
+
+This album contains photos from my vacation to Scotland.
+
+This whole section of the meta.md file is Markdown, go wild.
 ```
 
 ### Metadata Fields:
@@ -176,19 +161,21 @@ This album contains photos from my vacation to Hawaii.
 
 ### Password Protection:
 
-If you add a `secret` field in the `meta.md` file, the album will be password protected. Users will need to enter the correct password to access the album. The password can be stored as plain text or encoded, depending on your preference.
+If you add a `secret` field in the `meta.md` file, the album will be password protected. Users will need to enter the correct password to access the album. The password can be stored as plain text or encoded for now. In the future I would be good to support some form of application key encryption.
 
 ## Theming with Blade
 
-The application uses the Blade templating engine for theming. You can customize the look and feel of the application by modifying the Blade templates in the `views/` directory.
+The application uses the Blade templating engine for theming. You can customise the look and feel of the application by modifying the Blade templates inside the `themes/<theme>` directory.
 
 ### Available Templates:
+
+At a minimum a theme should contain the following:
 
 - **`index.blade.php`:** The homepage that lists all the albums.
 - **`album.blade.php`:** Displays photos within a specific album.
 - **`password.blade.php`:** The password prompt for password-protected albums.
 
-### Example of Customizing the Template:
+### Example of Customising the Theme:
 
 You can modify the `index.blade.php` template to change the layout of the album listing:
 
@@ -207,21 +194,9 @@ You can modify the `index.blade.php` template to change the layout of the album 
 </ul>
 ```
 
-## Security Features
+#### CSS
 
-To prevent brute force attacks on password-protected albums, the application includes the following security features:
-
-1. **Rate Limiting:**
-   - The application limits the number of password attempts a user can make. After a set number of failed attempts, the user is temporarily locked out.
-
-2. **CAPTCHA Integration:**
-   - You can integrate Google reCAPTCHA into the password form to prevent automated brute force attacks.
-
-3. **IP-Based Blocking:**
-   - You can implement IP-based blocking to prevent repeated failed attempts from the same IP address.
-
-4. **Password Hashing:**
-   - If you prefer, you can hash the `secret` field in the `meta.md` file using `password_hash()` for added security.
+The core application looks for a compiled css file within the root of the theme folder with the same name as the theme folder. For example, For the theme `themes/stog` the application will look for `themes/stog/stog.css`. This file is copied to public automatically.
 
 ## Using Carbon for Date Formatting
 
@@ -235,7 +210,7 @@ The application uses the Carbon library to format dates in a human-readable form
 @endif
 ```
 
-You can customize the date format using any valid date format string. For more information on Carbon, refer to the [official documentation](https://carbon.nesbot.com/docs/).
+You can customise the date format using any valid date format string. For more information on Carbon, refer to the [official documentation](https://carbon.nesbot.com/docs/).
 
 ## Troubleshooting
 
@@ -246,17 +221,11 @@ You can customize the date format using any valid date format string. For more i
    - Make sure that all Composer dependencies are installed.
 
 2. **Images Not Displaying:**
-   - Verify that the `public/static/` directory is writable and that images are being cached correctly.
+   - Verify that the `public/images/` directory is writable and that images are being cached correctly.
    - Check that the `GD` or `Imagick` extension is installed and enabled in PHP.
 
 3. **Password Not Working:**
    - Ensure that the password in the `meta.md` file matches the one being entered.
-   - If you are using a hashed password, make sure to verify it correctly using `password_verify()`.
 
-### Contact
-
-For any issues or feature requests, feel free to open an issue on the [GitHub repository](https://github.com/your-repo/photo-album-app) or contact the maintainer at your-email@example.com.
-
----
-
-Thank you for using the Photo Album Application! Enjoy managing and sharing your albums with ease.
+## Final Note
+**⚠️ Note: This application is still under very early development. Features may be incomplete or subject to change, and the application is not yet stable.**
