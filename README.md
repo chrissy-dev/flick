@@ -4,7 +4,7 @@
 
 **⚠️ Note: This application is still under very early development. Features may be incomplete or subject to change, and the application is not yet stable.**
 
-Flick is a PHP application that allows you to easily manage and display photo albums with features like on-the-fly image resizing, password protection, and clean URLs. This README will guide you through setting up the application, managing your albums, theming, and more.
+Flick is a PHP application that allows you to easily manage and display photo albums using files and folders with features like on-the-fly image resizing, password protection, and clean URLs. This README will guide you through setting up the application, managing your albums, theming, and more.
 
 ## Table of Contents
 
