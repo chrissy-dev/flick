@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+
+$commands = [
+    'cache:generate' => function ($arguments) {
+        $name = $arguments[0] ?? null;
+        if ($name) {
+            echo "Generate image cache for " . $name . "\n";
+        } else {
+            echo "Error: Model name is required.\n";
+        }
+    },
+    'cache:regenerate' => function ($arguments) {
+        $name = $arguments[0] ?? null;
+        if ($name) {
+            echo "Regenerate image cache for " . $name . "\n";
+        } else {
+            echo "Regenerate full image cache\n";
+        }
+    },
+];
+
+// Get the command and arguments from the input
+$command = $argv[1] ?? null;
+$arguments = array_slice($argv, 2);
+
+if (!$command || !array_key_exists($command, $commands)) {
+    echo "Available commands:\n";
+    foreach ($commands as $cmd => $callback) {
+        echo "  - $cmd\n";
+    }
+    exit(1);
+}
+
+// Execute the command
+$commands[$command]($arguments);

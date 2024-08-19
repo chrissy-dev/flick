@@ -1,0 +1,166 @@
+.album-content {
+  @apply grid gap-6 lg:gap-12 text-base font-light;
+
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-base font-semibold mx-auto max-w-3xl w-full;
+  }
+
+  a,
+  a:visited {
+    @apply underline underline-offset-4;
+  }
+
+  p,
+  ul,
+  ol,
+  hr,
+  pre {
+    @apply mx-auto text-base lg:text-lg max-w-3xl w-full;
+  }
+
+  strong {
+    @apply font-bold;
+  }
+
+  figure {
+    @apply mx-auto max-w-6xl text-base w-full;
+  }
+
+  figure img {
+    @apply lg:rounded;
+  }
+
+  figure figcaption {
+    @apply text-sm my-2 max-w-lg mx-auto md:text-center font-semibold;
+  }
+
+  figure figcaption cite,
+  figure figcaption .meta {
+    @apply block mt-1 not-italic font-normal text-xs;
+  }
+
+  .h1,
+  h1 {
+    @apply text-2xl;
+  }
+
+  .h2,
+  h2 {
+    @apply text-xl;
+  }
+
+  .h3,
+  h3 {
+    @apply text-lg;
+  }
+
+  .h4,
+  h4 {
+    @apply text-base;
+  }
+
+  .h5,
+  h5 {
+    @apply text-sm;
+  }
+
+  .h6,
+  h6 {
+    @apply text-xs;
+  }
+
+  figure img {
+    @apply w-full;
+  }
+
+  ul {
+    @apply list-disc;
+  }
+
+  ol {
+    @apply list-decimal;
+  }
+
+  ol,
+  ul {
+    @apply my-3 lg:mt-4 mb-8 pl-12;
+  }
+
+  ol ol,
+  ol ul,
+  ul ol,
+  ul ul {
+    @apply my-3 lg:mt-4 mb-8 pl-12;
+  }
+  li {
+    @apply my-2;
+  }
+
+  pre {
+    @apply bg-zinc-900 p-6 text-sm rounded-lg overflow-scroll text-slate-50 my-3 lg:my-6;
+  }
+
+  :not(pre) > code {
+    @apply border px-2 mx-1 rounded-lg text-base bg-white;
+  }
+
+   hr {
+    @apply border-t-0 max-w-xs border-b border-dashed border-neutral-100 my-6;
+}
+
+}
+
+
+
+/* .post-content p {
+    @apply mx-auto max-w-3xl leading-relaxed;
+}
+
+.post-content strong {
+    @apply font-semibold ;
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+    @apply mx-auto max-w-3xl mb-6 mt-16 font-bold 
+
+.post-content ul {
+    @apply mx-auto max-w-3xl my-16 pl-12 pr-6;
+}
+
+.post-content pre {
+    @apply mx-auto max-w-3xl my-12 rounded-none lg:rounded;
+}
+
+.comments {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: var(--mw-readable);
+	padding-left: calc(var(--spacing) * 3);
+	padding-right: calc(var(--spacing) * 2);
+	margin-bottom: calc(var(--spacing) * 2);
+	margin-top: calc(var(--spacing) * 2);
+}
+
+.post-content ul li {
+	margin-top: calc(var(--spacing) * 2);
+}
+
+.post-content p + p {
+	@apply mt-6 lg:mt-12;
+} */

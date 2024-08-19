@@ -1,0 +1,33 @@
+{
+  "name": "chrissy-dev/flick",
+  "description": "Flick is a simple and lightweight PHP application to host photo galleries.",
+  "version": "0.0.1",
+  "keywords": [
+    "photos",
+    "blogging",
+    "self-hosted",
+    "php",
+    "blade"
+  ],
+  "homepage": "https://mistaro.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Chris Collins",
+      "homepage": "http://www.mistaro.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "spatie/yaml-front-matter": "^2.0",
+    "jenssegers/blade": "^1.4",
+    "nesbot/carbon": "^2.72",
+    "vlucas/phpdotenv": "^5.6",
+    "erusev/parsedown": "^1.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  }
+}
