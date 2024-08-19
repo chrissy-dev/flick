@@ -81,7 +81,8 @@ flick/
 │   ├── Utilities/
 ├── public/
 │   ├── index.php
-│   ├── static/           # Cached and resized images
+│   ├── images/            # Cached and resized images
+│   ├── themes/            # Theme assets, copied from theme folder
 ├── views/                 # Blade templates
 │   ├── index.blade.php
 │   ├── album.blade.php
