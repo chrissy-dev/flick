@@ -11,13 +11,7 @@ use App\Utilities\Router;
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-// Load the configuration
-$config = require_once __DIR__ . '/../app/Utilities/Config.php';
-
-// Set as global
-$GLOBALS['config'] = $config;
-
-$theme = new Theme($config);
+$theme = new Theme();
 $theme->setup();
 
 Router::route();

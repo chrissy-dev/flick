@@ -11,7 +11,7 @@ class Theme
     public function __construct()
     {
         // Set the theme from the config
-        $this->theme = $GLOBALS['config']['theme'];
+        $this->theme = env('THEME');
 
         // Define paths
         $this->sourceFile = "../themes/{$this->theme}/{$this->theme}.css";

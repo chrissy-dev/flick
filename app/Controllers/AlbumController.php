@@ -10,16 +10,24 @@ session_start();
 class AlbumController
 {
     protected $blade;
+    protected $themeSettings;
 
     public function __construct()
     {
         $this->blade = new Blade('../themes/' .  $_ENV['THEME'], '../cache');
+
+        if (file_exists('../themes/' . $_ENV['THEME'] . '/theme-settings.php')) {
+            $this->themeSettings = require '../themes/' . $_ENV['THEME'] . '/theme-settings.php';
+            $this->themeSettings = (object) $this->themeSettings;
+        } else {
+            $this->themeSettings = (object) [];
+        }
     }
 
     public function index()
-    {
+    {  
         $albums = Album::getAll();
-        echo $this->blade->render('index', ['albums' => $albums]);
+        echo $this->blade->render('index', ['albums' => $albums, 'theme' => $this->themeSettings]);
     }
 
     public function show($albumName)
@@ -89,6 +97,6 @@ class AlbumController
             ];
         }, $photos);
 
-        echo $this->blade->render('album', ['album' => $metadata, 'photos' => $photosWithExif]);
+        echo $this->blade->render('album', ['album' => $metadata, 'photos' => $photosWithExif, 'theme' => $this->themeSettings]);
     }
 }
