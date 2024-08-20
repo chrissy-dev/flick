@@ -18,6 +18,22 @@ $commands = [
             echo "Regenerate full image cache\n";
         }
     },
+    'serve' => function ($arguments) {
+        $port = 8000;
+        $host = 'localhost';
+        $documentRoot = 'public';
+
+        // Check if the port is available
+        while (!isPortAvailable($host, $port)) {
+            $port++;
+        }
+
+        echo "Starting flick development server on http://$host:$port\n";
+        echo "Press Ctrl-C to stop the server\n";
+
+        // Start the PHP built-in server
+        exec("php -S $host:$port -t $documentRoot");
+    },
 ];
 
 // Get the command and arguments from the input
@@ -34,3 +50,16 @@ if (!$command || !array_key_exists($command, $commands)) {
 
 // Execute the command
 $commands[$command]($arguments);
+
+// Function to check if a port is available
+function isPortAvailable($host, $port)
+{
+    $connection = @fsockopen($host, $port);
+
+    if (is_resource($connection)) {
+        fclose($connection);
+        return false;
+    }
+
+    return true;
+}
