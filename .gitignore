@@ -146,7 +146,7 @@ Temporary Items
 
 # Flick Specific
 cache
-public/images
 public/themes
+public/generated
 albums/*/
 vendor

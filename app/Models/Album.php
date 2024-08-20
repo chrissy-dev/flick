@@ -61,6 +61,7 @@ class Album
             $albumData[] = [
                 'name' => $albumName,
                 'title' => $metadata['title'] ?? $albumName,
+                'cover' => isset($metadata['data']['cover']) ? self::getThumbnail($albumName, $albumPath . '/' . $metadata['data']['cover']) : null,
                 'date' => $metadata['date'] ?? null
             ];
         }
@@ -83,15 +84,16 @@ class Album
 
         $content = file_get_contents($metaFile);
         $document = YamlFrontMatter::parse($content);
+        $frontMatterData = $document->matter(); // Returns an associative array of front matter
 
         return [
             'title' => $document->title,
             'date' => $document->date,
             'secret' => $document->secret ?? null,
+            'data' => $frontMatterData,
             'content' => $document->body()
         ];
     }
-
     /**
      * Get a list of photos in the album.
      *
@@ -118,15 +120,16 @@ class Album
 
         $content = file_get_contents($metaFile);
         $document = YamlFrontMatter::parse($content);
+        $frontMatterData = $document->matter(); // Returns an associative array of front matter
 
         return [
             'title' => $document->title,
             'date' => $document->date,
             'secret' => $document->secret ?? null,
+            'data' => $frontMatterData,
             'content' => $document->body()
         ];
     }
-
     /**
      * Get the EXIF data for a photo.
      *
@@ -162,18 +165,57 @@ class Album
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
         // Define the cache path and file path using the hashed filename
-        $cachePath = "../public/images/$album/$hash.$extension";
-        $filePath = "/images/$album/$hash.$extension";
+        $cachePath = "../public/generated/$album/$hash.$extension";
+        $filePath = "/generated/$album/$hash.$extension";
 
         // Check if the resized image already exists in the cache
         if (!file_exists($cachePath)) {
             // Create the directory if it doesn't exist
-            if (!is_dir("../public/images/$album")) {
-                mkdir("../public/images/$album", 0755, true);
+            if (!is_dir("../public/generated/$album")) {
+                mkdir("../public/generated/$album", 0755, true);
             }
 
             // Resize and save the image in the cache
             self::resizeImage($photo, $cachePath);
+        }
+
+        // Return the file path for the resized image
+        return $filePath;
+    }
+
+    /**
+     * Get the thumbnail version of a photo for covers.
+     *
+     * This method generates a thumbnail image and stores it in the cache directory.
+     * If the resized image already exists, it returns the cached version.
+     *
+     * @param string $album The name of the album.
+     * @param string $photo The file path to the photo.
+     * @return string The file path to the thumbnail photo.
+     */
+    public static function getThumbnail($album, $photo, $width = 400, $height = 400)
+    {
+        $filename = basename($photo);
+
+        // Generate a unique hash for the filename
+        $hash = md5($album . $filename);  // Hashing based on album name and filename
+
+        // Extract the file extension
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+        // Define the cache path and file path using the hashed filename
+        $cachePath = "../public/generated/$album/thumbnails/$hash.$extension";
+        $filePath = "/generated/$album/thumbnails/$hash.$extension";
+
+        // Check if the resized image already exists in the cache
+        if (!file_exists($cachePath)) {
+            // Create the directory if it doesn't exist
+            if (!is_dir("../public/generated/$album/thumbnails")) {
+                mkdir("../public/generated/$album/thumbnails", 0755, true);
+            }
+
+            // Resize and save the image in the cache
+            self::resizeImage($photo, $cachePath, $width, $height);
         }
 
         // Return the file path for the resized image
