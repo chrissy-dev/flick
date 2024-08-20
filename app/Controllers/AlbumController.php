@@ -3,25 +3,66 @@
 namespace App\Controllers;
 
 use App\Models\Album;
+use App\Services\PasswordGuard;
 use Jenssegers\Blade\Blade;
 
 session_start();
 
+/**
+ * Class AlbumController
+ *
+ * This controller handles album-related actions such as displaying all albums,
+ * showing individual albums, and managing password-protected albums.
+ *
+ * @package App\Controllers
+ */
 class AlbumController
 {
+    /**
+     * The Blade template engine instance.
+     *
+     * @var Blade
+     */
     protected $blade;
 
+    /**
+     * The PasswordGuard service for managing password attempts and lockouts.
+     *
+     * @var PasswordGuard
+     */
+    protected $passwordGuard;
+
+    /**
+     * AlbumController constructor.
+     *
+     * Initializes the Blade template engine and PasswordGuard service.
+     */
     public function __construct()
     {
         $this->blade = new Blade('../themes/' .  $_ENV['THEME'], '../cache');
+        $this->passwordGuard = new PasswordGuard();
     }
 
+    /**
+     * Display a listing of all albums.
+     *
+     * This method fetches all albums from the model and renders the index view.
+     */
     public function index()
     {
         $albums = Album::getAll();
         echo $this->blade->render('index', ['albums' => $albums]);
     }
 
+    /**
+     * Display a specific album.
+     *
+     * This method handles password protection for albums that have a secret.
+     * If the correct password is provided, the album's photos are displayed.
+     * Otherwise, it renders the password prompt or error messages as needed.
+     *
+     * @param string $albumName The name of the album to display.
+     */
     public function show($albumName)
     {
         $album = new Album($albumName);
@@ -29,44 +70,23 @@ class AlbumController
 
         // Check if the album has a secret
         if (isset($metadata['secret'])) {
-            // Initialize the session variables if not set
-            if (!isset($_SESSION['attempts'])) {
-                $_SESSION['attempts'] = 0;
-            }
-            if (!isset($_SESSION['last_attempt_time'])) {
-                $_SESSION['last_attempt_time'] = time();
-            }
-
-            // Set the rate limit parameters
-            $maxAttempts = 2; // Max attempts before lockout
-            $lockoutTime = 15 * 60; // Lockout time in seconds (15 minutes)
 
             // Check if the user is locked out
-            if ($_SESSION['attempts'] >= $maxAttempts) {
-                $timeSinceLastAttempt = time() - $_SESSION['last_attempt_time'];
-
-                if ($timeSinceLastAttempt < $lockoutTime) {
-                    // User is locked out
-                    echo $this->blade->render('password', ['error' => 'Too many attempts. Please try again later.', 'albumName' => $albumName]);
-                    return;
-                } else {
-                    // Reset attempts after lockout time has passed
-                    $_SESSION['attempts'] = 0;
-                }
+            if ($this->passwordGuard->isLockedOut()) {
+                echo $this->blade->render('password', ['error' => 'Too many attempts. Please try again later.', 'albumName' => $albumName]);
+                return;
             }
 
             // If a password is submitted, verify it
             if ($_POST['password'] ?? false) {
-                if ($_POST['password'] !== $metadata['secret']) {
+                if (!$this->passwordGuard->verifyPassword($_POST['password'], $metadata['secret'])) {
                     // Password is incorrect, increment the attempt counter
-                    $_SESSION['attempts']++;
-                    $_SESSION['last_attempt_time'] = time();
-
+                    $this->passwordGuard->incrementAttempts();
                     echo $this->blade->render('password', ['error' => 'Incorrect password', 'albumName' => $albumName]);
                     return;
                 } else {
                     // Reset attempts on successful login
-                    $_SESSION['attempts'] = 0;
+                    $this->passwordGuard->resetAttempts();
                 }
             } else {
                 // Prompt for password
@@ -75,6 +95,7 @@ class AlbumController
             }
         }
 
+        // Retrieve and render album photos with EXIF data
         $photos = $album->getPhotos();
         $photosWithExif = array_map(function ($photo) use ($albumName) {
             $resizedPhoto = Album::getResizedPhoto($albumName, $photo);
