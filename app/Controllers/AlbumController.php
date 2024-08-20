@@ -33,6 +33,13 @@ class AlbumController
     protected $passwordGuard;
 
     /**
+     * Theme Settings for the current theme.
+     *
+     * @var themeSettings
+     */
+    protected $themeSettings;
+
+    /**
      * AlbumController constructor.
      *
      * Initializes the Blade template engine and PasswordGuard service.
@@ -41,6 +48,12 @@ class AlbumController
     {
         $this->blade = new Blade('../themes/' .  $_ENV['THEME'], '../cache');
         $this->passwordGuard = new PasswordGuard();
+        if (file_exists('../themes/' . $_ENV['THEME'] . '/theme-settings.php')) {
+            $this->themeSettings = require '../themes/' . $_ENV['THEME'] . '/theme-settings.php';
+            $this->themeSettings = (object) $this->themeSettings;
+        } else {
+            $this->themeSettings = (object) [];
+        }
     }
 
     /**
@@ -51,7 +64,7 @@ class AlbumController
     public function index()
     {
         $albums = Album::getAll();
-        echo $this->blade->render('index', ['albums' => $albums]);
+        echo $this->blade->render('index', ['albums' => $albums, 'theme' => $this->themeSettings]);
     }
 
     /**
@@ -110,6 +123,6 @@ class AlbumController
             ];
         }, $photos);
 
-        echo $this->blade->render('album', ['album' => $metadata, 'photos' => $photosWithExif]);
+        echo $this->blade->render('album', ['album' => $metadata, 'photos' => $photosWithExif, 'theme' => $this->themeSettings]);
     }
 }
