@@ -20,7 +20,7 @@
 <script src="https://unpkg.com/magic-grid/dist/magic-grid.min.js"></script>
 <script>
     let magicGrid = new MagicGrid({
-        container: "#album-photos", // Required. Can be a class, id, or an HTMLElement.
+        container: "#masonry-grid", // Required. Can be a class, id, or an HTMLElement.
         static: true, // Required for static content.
         animate: true, // Optional.
         gutter: 16, // Optional. Space between items.

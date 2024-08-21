@@ -108,21 +108,22 @@ class AlbumController
             }
         }
 
+
         // Retrieve and render album photos with EXIF data
         $photos = $album->getPhotos();
         $photosWithExif = array_map(function ($photo) use ($albumName) {
             $resizedPhoto = Album::getResizedPhoto($albumName, $photo);
             $exif = Album::getExifData($photo);
-
+            
             return (object) [
                 'path' => $resizedPhoto,
-                'caption' => $exif['FileName'],
-                'date' => $exif['FileDateTime'],
-                'width' => $exif['COMPUTED']['Width'],
-                'height' => $exif['COMPUTED']['Height'],
+                'date' => $exif['FileDateTime'] ?? '',
+                'width' => $exif['COMPUTED']['Width'] ?? 0,
+                'height' => $exif['COMPUTED']['Height'] ??  0,
+                'exif' => (object) $exif
             ];
         }, $photos);
 
-        echo $this->blade->render('album', ['album' => $metadata, 'photos' => $photosWithExif, 'theme' => $this->themeSettings]);
+        echo $this->blade->render('album', ['album' => $metadata, 'meta' => $metadata['data'], 'photos' => $photosWithExif, 'theme' => $this->themeSettings]);
     }
 }

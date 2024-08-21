@@ -140,7 +140,8 @@ class Album
      */
     public static function getExifData($photo)
     {
-        $exif = @exif_read_data($photo);
+        $exif = @exif_read_data($photo, 'EXIF');
+        // dd($exif);
         return $exif;
     }
 

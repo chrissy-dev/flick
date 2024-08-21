@@ -9,22 +9,22 @@
             @foreach ($albums as $album)
                 <li class="flex flex-col gap-2">
                     @if (isset($album['cover']))
-                        <a href="/album/{{ urlencode($album['name']) }}" class="font-medium hover:font-bold transition-all">
+                        <a href="/album/{{ urlencode($album['name']) }}" class="font-medium opacity-90 hover:opacity-100 active:scale-95 shadow active:shadow-sm hover:font-bold transition-all">
                             <figure>
                                 <img class="w-full aspect-square object-cover" src="{{ $album['cover'] }}" alt="">
                             </figure>
                         </a>
                     @else
-                        <a href="/album/{{ urlencode($album['name']) }}" class="font-medium hover:font-bold transition-all">
+                        <a href="/album/{{ urlencode($album['name']) }}" class="font-medium active:scale-95 hover:font-bold transition-all">
                             <figure class="bg-gray-200 aspect-square"></figure>
                         </a>
                     @endif
                    <p class="grid">
-                     <a href="/album/{{ urlencode($album['name']) }}" class="font-medium hover:font-bold transition-all">
+                     <a href="/album/{{ urlencode($album['name']) }}" class="font-medium">
                         {{ $album['title'] }}
                     </a>
                     @if ($album['date'])
-                        <span class="uppercase text-sm">{{ \Carbon\Carbon::parse($album['date'])->format('M, Y') }}</span>
+                        <span class="uppercase text-xs">{{ \Carbon\Carbon::parse($album['date'])->format('M, Y') }}</span>
                     @endif
                    </p>
                 </li>
